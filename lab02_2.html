@@ -1,0 +1,65 @@
+<HTML>
+    <BODY>
+    
+    <canvas id='lab02_1' width='500' height='500' style='border:1px solid'>
+    </canvas>
+    <a href='#' class='button' id='Button1'>Download</a>
+    
+    <canvas id='lab02_2' width='500' height='500' style='border:1px solid'>
+    </canvas>
+    <a href='#' class='button' id='Button2'>Save</a>
+    
+    
+    <script>
+    let canvas = document.getElementById('lab02_1');
+    let ctx = canvas.getContext('2d');
+    
+    let Button1 = document.getElementById('Button1');
+
+    Button1.addEventListener('click', function(e) {
+    let dataUrl = canvas.toDataURL('image/png');
+    Button1.href = dataUrl;
+    Button1.download = 'test2.png';
+    });
+    
+    
+    let canvas2 = document.getElementById('lab02_2');
+    let ctx2 = canvas2.getContext('2d');
+    
+    let Button2 = document.getElementById('Button2');
+    Button2.addEventListener('click', function(e) {
+    let dataUrl = canvas2.toDataURL('image/png');
+    Button2.href = dataUrl;
+    Button2.download = 'test2.png';
+    });
+    
+    
+    let origImg = new Image();
+    origImg.src = 'test2.png';
+    origImg.onload = function() {
+    ctx.drawImage(origImg, 0, 0);
+    
+    let origImgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    console.log(origImgData);
+    
+    let newImgData = ctx2.createImageData(canvas2.width, canvas2.height);
+    for (let i = 0; i < canvas.height; i++) {
+    for (let j = 0; j < canvas.width; j++) {
+    let average = 0;
+    for (let k = 0; k < 4; k++) {
+    average += origImgData.data[4*(i*canvas.width + j) + k];
+    }
+    average /= 4;
+    
+    for (let k = 0; k < 4; ++k) {
+    newImgData.data[4*(i*canvas.width + j) + k] = average;
+    }
+    }
+    }
+    ctx2.putImageData(newImgData, 0, 0);
+    }
+    
+    </script>
+    
+    </BODY>
+    </HTML>
